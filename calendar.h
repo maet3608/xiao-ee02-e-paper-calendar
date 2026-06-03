@@ -93,12 +93,12 @@ void drawCalendar(EPaper &epaper) {
                       CAL_HEADER_Y + (CAL_HEADER_H - th + 10) / 2);
 
     // --- Weekday headers ---
-    epaper.setTextColor(TFT_BLACK);
     epaper.setFreeFont(&FreeSansBold9pt7b);
     int dayLabelY = CAL_HEADER_Y + CAL_HEADER_H + 24;
     for (int i = 0; i < CAL_COLS; i++) {
         int cx = CAL_GRID_X + i * CAL_CELL_W;
         int dw = epaper.textWidth(DAY_NAMES[i]);
+        epaper.setTextColor((i == 5 || i == 6) ? TFT_RED : TFT_BLACK);
         epaper.drawString(DAY_NAMES[i], cx + (CAL_CELL_W - dw) / 2, dayLabelY);
     }
 
@@ -122,7 +122,8 @@ void drawCalendar(EPaper &epaper) {
             epaper.fillRect(x + 2, y, CAL_CELL_W - 4, CAL_CELL_H, TFT_BLACK);
             epaper.setTextColor(TFT_WHITE);
         } else {
-            epaper.setTextColor(TFT_BLACK);
+            int wday = (firstDay + d - 1) % 7;
+            epaper.setTextColor((wday == 5 || wday == 6) ? TFT_RED : TFT_BLACK);
         }
         epaper.drawString(buf, cx, cy);
 
