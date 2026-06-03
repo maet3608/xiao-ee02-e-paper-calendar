@@ -3,6 +3,7 @@
 // tool settings:
 // - USB CDC on Boot: Enabled
 // - PSRAM : OPI PSRAM
+// - Partition Scheme: Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)
 // esp32 core: 4.0.0-alpha1
 // libraries:
 // - https://github.com/Seeed-Studio/Seeed_GFX/tree/master : 2.0.3
@@ -19,6 +20,7 @@
 
 #include "TFT_eSPI.h"
 #include "calendar.h"
+#include "constants.h"
 #include "credentials.h"
 #include "picture.h"
 #include "weather.h"
@@ -27,7 +29,9 @@ EPaper epaper;
 
 void setup() {
     Serial.begin(115200);
+
     syncTime();
+    updateWeather(); // fetch current weather via OpenWeather API
 
     epaper.begin();
     epaper.setRotation(1);
@@ -42,9 +46,9 @@ void setup() {
     epaper.drawString("Picture", x / 2, epaper.height() / 2);
     epaper.drawRect(gap, gap, iw, ih, TFT_RED); // picture placeholder
 
-    // Forecast section
+    // Something section
     epaper.drawLine(gap, ih + 2 * gap, x - gap, ih + 2 * gap, TFT_BLACK);
-    epaper.drawString("Forecast", x / 2, ih + 2 * gap + 20);
+    epaper.drawString("Something", x / 2, ih + 2 * gap + 20);
 
     // Calendar section
     int y = epaper.height() / 2;
@@ -52,12 +56,20 @@ void setup() {
     drawCalendar(epaper);
 
     // Weather section
-    epaper.drawString("Weather", epaper.width() - x / 2, y / 2);
+    drawWeather(epaper);
 
     epaper.update();
     epaper.sleep();
+
+    // Deep sleep for 3 hours (in microseconds)
+    // 3 hours = 3 * 60 * 60 * 1000000 = 10800000000
+    // esp_sleep_enable_timer_wakeup(3ULL * 60 * 60 * 1000000);
+
+    // Serial.println("Deep sleep for 3 hours...");
+    // Serial.flush();
+    // esp_deep_sleep_start();
 }
 
 void loop() {
-    // put your main code here, to run repeatedly:
+    // unreachable due to deep sleep
 }

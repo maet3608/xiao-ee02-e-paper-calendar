@@ -1,33 +1,14 @@
 #pragma once
 
 #include "TFT_eSPI.h"
+#include "constants.h"
 #include "credentials.h"
 #include <WiFi.h>
 #include <time.h>
 
-// Berlin (CET/CEST) timezone for NTP synchronization
-const char *TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3";
-const char *NTP_SERVER = "pool.ntp.org";
-
-// Month names
-const char *MONTH_NAMES[] = {
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"};
-
-// Weekday abbreviations starting with Monday (EU convention)
-const char *DAY_NAMES[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
-
-// Calendar layout constants (lower right area of the 1600x1200 display)
-// Right panel: x = 1054..1580 (526px), bottom half: y = 600..1180 (580px)
-const int CAL_HEADER_X = 1064;
-const int CAL_HEADER_Y = 615;
-const int CAL_HEADER_W = 506;
-const int CAL_HEADER_H = 60;
-const int CAL_GRID_X = 1063;
-const int CAL_GRID_Y = 730;
-const int CAL_CELL_W = 72;
-const int CAL_CELL_H = 45;
-const int CAL_COLS = 7;
+// ============================================================
+// Calendar utility functions
+// ============================================================
 
 bool isLeapYear(int year) {
     return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
@@ -50,7 +31,7 @@ int dayOfWeek(int year, int month, int day) {
     return (timeinfo.tm_wday + 6) % 7; // convert Sunday=0 to Monday=0
 }
 
-// Synchronize system time with an NTP server using Berlin timezone
+// Synchronize system time with an NTP server using configured timezone
 void syncTime() {
     WiFi.begin(SSID, PASSWORD);
     for (int i = 0; i < 100 && WiFi.status() != WL_CONNECTED; i++) {
@@ -58,7 +39,6 @@ void syncTime() {
     }
     if (WiFi.status() == WL_CONNECTED) {
         configTzTime(TIMEZONE, NTP_SERVER);
-        // Wait for NTP sync to complete (configTzTime is asynchronous)
         struct tm t;
         int retry = 0;
         while (!getLocalTime(&t) && retry < 20) {
@@ -118,7 +98,6 @@ void drawCalendar(EPaper &epaper) {
         int cy = y + (CAL_CELL_H - dayFontH + 5) / 2;
 
         if (d == today) {
-            // Highlight current day: black background with white text
             epaper.fillRect(x + 2, y, CAL_CELL_W - 4, CAL_CELL_H, TFT_BLACK);
             epaper.setTextColor(TFT_WHITE);
         } else {
@@ -129,7 +108,6 @@ void drawCalendar(EPaper &epaper) {
 
         x += CAL_CELL_W;
         if ((firstDay + d) % 7 == 0) {
-            // End of week: move to next row
             y += CAL_CELL_H + 4;
             x = CAL_GRID_X;
         }
