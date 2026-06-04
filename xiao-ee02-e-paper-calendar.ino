@@ -51,7 +51,7 @@ void setup() {
 
   epaper.drawLine(PIC_GAP, PIC_H + 2 * PIC_GAP, PIC_RIGHT_X - PIC_GAP,
                   PIC_H + 2 * PIC_GAP, TFT_BLACK);
-  epaper.drawString("Something", PIC_RIGHT_X / 2, PIC_H + 2 * PIC_GAP + 20);
+  drawDailyForecastSection(epaper);
 
   int y = epaper.height() / 2;
   epaper.drawLine(PIC_RIGHT_X + PIC_GAP, y, epaper.width() - 2 * PIC_GAP, y,

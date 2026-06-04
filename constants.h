@@ -85,9 +85,18 @@ const int CAL_COLS = 7;
 // WX_ICON_SIZE=180 with scale=20 gives ~160px wide icons
 #define ICON_LARGE 20
 #define ICON_SMALL 8
+#define ICON_DAILY 10
 
 // Forecast
 #define FORECAST_COUNT 5
+
+// Daily forecast section (below picture, left side)
+// Area: x=10..1034, y=1044..1190 (146px tall)
+const int DAILY_FCST_Y = 1054;
+const int DAILY_FCST_H = 136;
+const int DAILY_FCST_AREA_W = 1024;
+const int DAILY_FCST_COUNT = 5;
+const int DAILY_FCST_CELL_W = DAILY_FCST_AREA_W / DAILY_FCST_COUNT; // ~204
 
 // Weather section (upper right: x=1054..1580, y=10..600)
 const int WX_AREA_X = 1054;
