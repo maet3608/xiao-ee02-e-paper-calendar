@@ -72,11 +72,11 @@ const char *IMAGE_PATH = "/img_%04d-%02d-%02d.bin";
 
 // Calendar section (lower right: x=1054..1580, y=600..1180)
 const int CAL_HEADER_X = 1064;
-const int CAL_HEADER_Y = 615;
+const int CAL_HEADER_Y = 600;
 const int CAL_HEADER_W = 506;
 const int CAL_HEADER_H = 60;
 const int CAL_GRID_X = 1063;
-const int CAL_GRID_Y = 730;
+const int CAL_GRID_Y = 695;
 const int CAL_CELL_W = 72;
 const int CAL_CELL_H = 45;
 const int CAL_COLS = 7;
@@ -85,7 +85,7 @@ const int CAL_COLS = 7;
 // WX_ICON_SIZE=180 with scale=20 gives ~160px wide icons
 #define ICON_LARGE 20
 #define ICON_SMALL 8
-#define ICON_DAILY 7
+#define ICON_DAILY 6
 
 // Forecast
 #define FORECAST_COUNT 5
@@ -109,9 +109,15 @@ const int WX_DESC_Y = 305;
 const int WX_DATA_Y = 360;
 
 // 3-hourly forecast section (bottom of weather panel)
-const int FCST_Y = 470;
+const int FCST_Y = 430;
 const int FCST_CELL_W = 95;
 const int FCST_ICON_Y = FCST_Y + 31;
+
+// Calendar events section (below monthly grid, lower right)
+const int CAL_EVENTS_X = 1063;
+const int CAL_EVENTS_W = 504;
+const int CAL_EVENTS_Y = 970;
+const int CAL_EVENTS_MAX = 4;
 
 // Skip image generation if one already exists for today (set false to force
 // regeneration)

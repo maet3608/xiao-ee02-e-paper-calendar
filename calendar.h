@@ -5,7 +5,10 @@
 #include "TFT_eSPI.h"
 #include "constants.h"
 #include "credentials.h"
+#include <ArduinoJson.h>
+#include <HTTPClient.h>
 #include <WiFi.h>
+#include <WiFiClientSecure.h>
 #include <time.h>
 
 // ============================================================
@@ -65,8 +68,6 @@ void drawCalendar(EPaper &epaper) {
   char buf[32];
 
   // --- Month & Year header (white text on black background) ---
-  // epaper.fillRect(CAL_HEADER_X, CAL_HEADER_Y, CAL_HEADER_W, CAL_HEADER_H,
-  // TFT_BLACK);
   epaper.setTextColor(TFT_BLACK);
   epaper.setFreeFont(&FreeSans18pt7b);
   sprintf(buf, "%s %d", MONTH_NAMES[month - 1], year);
@@ -77,7 +78,7 @@ void drawCalendar(EPaper &epaper) {
 
   // --- Weekday headers ---
   epaper.setFreeFont(&FreeSansBold9pt7b);
-  int dayLabelY = CAL_HEADER_Y + CAL_HEADER_H + 24;
+  int dayLabelY = CAL_HEADER_Y + CAL_HEADER_H + 10;
   for (int i = 0; i < CAL_COLS; i++) {
     int cx = CAL_GRID_X + i * CAL_CELL_W;
     int dw = epaper.textWidth(DAY_NAMES[i]);
@@ -114,6 +115,117 @@ void drawCalendar(EPaper &epaper) {
       y += CAL_CELL_H + 4;
       x = CAL_GRID_X;
     }
+  }
+
+  epaper.setTextColor(TFT_BLACK);
+}
+
+// ============================================================
+// Google Calendar events
+// ============================================================
+
+struct CalendarEvent {
+  bool valid;
+  char start[6];
+  char end[6];
+  char title[64];
+};
+
+static CalendarEvent calEvents[CAL_EVENTS_MAX] = {};
+
+// Fetch today's events from the Google Apps Script endpoint
+bool fetchCalendarEvents() {
+  WiFiClientSecure client;
+  client.setInsecure();
+
+  HTTPClient http;
+  char url[256];
+  snprintf(url, sizeof(url), "%s?key=%s", GOOGLE_CALENDAR_URL,
+           CALENDAR_API_KEY);
+  http.begin(client, url);
+  http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  int code = http.GET();
+  if (code != HTTP_CODE_OK) {
+    http.end();
+    Serial.printf("Calendar API returned %d\n", code);
+    return false;
+  }
+  String payload = http.getString();
+  http.end();
+
+  JsonDocument doc;
+  DeserializationError err = deserializeJson(doc, payload);
+  if (err) {
+    Serial.printf("Calendar JSON error: %s\n", err.c_str());
+    return false;
+  }
+
+  JsonArray events = doc["events"];
+  int count = 0;
+  for (JsonObject ev : events) {
+    if (count >= CAL_EVENTS_MAX)
+      break;
+    const char *s = ev["start"];
+    const char *e = ev["end"];
+    const char *t = ev["title"];
+    if (s)
+      strncpy(calEvents[count].start, s, sizeof(calEvents[count].start) - 1);
+    if (e)
+      strncpy(calEvents[count].end, e, sizeof(calEvents[count].end) - 1);
+    if (t)
+      strncpy(calEvents[count].title, t, sizeof(calEvents[count].title) - 1);
+    calEvents[count].valid = true;
+    Serial.printf("Event[%d]: %s - %s  %s\n", count, calEvents[count].start,
+                  calEvents[count].end, calEvents[count].title);
+    count++;
+  }
+  return true;
+}
+
+// Draw calendar events below the monthly grid
+void drawCalendarEvents(EPaper &epaper) {
+  epaper.setFreeFont(&FreeSans12pt7b);
+  epaper.setTextColor(TFT_BLACK);
+
+  int fontH = epaper.fontHeight();
+  int lineH = fontH + 6;
+  int areaW = CAL_EVENTS_W;
+
+  // Centered divider line above event list
+  int divLen = 200;
+  int divX = CAL_EVENTS_X + (CAL_EVENTS_W - divLen) / 2 - 15;
+  int y = CAL_EVENTS_Y;
+  epaper.drawLine(divX, y, divX + divLen, y, TFT_BLACK);
+  y += 30;
+
+  for (int i = 0; i < CAL_EVENTS_MAX; i++) {
+    if (!calEvents[i].valid)
+      continue;
+
+    char line[96];
+    snprintf(line, sizeof(line), "%s - %s  %s", calEvents[i].start,
+             calEvents[i].end, calEvents[i].title);
+
+    // Truncate with "..." if text is too wide for the area
+    int tw = epaper.textWidth(line);
+    if (tw > areaW) {
+      int len = strlen(line);
+      while (len > 3 && tw > areaW) {
+        len--;
+        char trunc[96];
+        strncpy(trunc, line, len);
+        trunc[len] = '\0';
+        strcat(trunc, "...");
+        tw = epaper.textWidth(trunc);
+        if (tw <= areaW) {
+          strcpy(line, trunc);
+          break;
+        }
+      }
+    }
+
+    epaper.drawString(line, CAL_EVENTS_X, y);
+    y += lineH;
   }
 
   epaper.setTextColor(TFT_BLACK);

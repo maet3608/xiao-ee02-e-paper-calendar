@@ -748,8 +748,8 @@ void drawDailyForecastSection(EPaper &epaperRef) {
 
   int dayY = DAILY_FCST_Y + 6;
   int iconAreaSize = 44;
-  int iconY = DAILY_FCST_Y + DAILY_FCST_H / 2 - 8;
-  int tempY = iconY + iconAreaSize / 2 + 4;
+  int iconY = DAILY_FCST_Y + DAILY_FCST_H / 2 - 7;
+  int tempY = iconY + iconAreaSize / 2 + 2;
   int descY = tempY + tempFontH;
 
   // Vertical separator lines between days
@@ -905,6 +905,8 @@ bool updateWeather() {
     fetchForecastData();
     Serial.println("Fetching daily forecast data...");
     fetchDailyForecastData();
+    Serial.println("Fetching calendar events...");
+    fetchCalendarEvents();
   }
   WiFi.disconnect(true);
   WiFi.mode(WIFI_OFF);
