@@ -57,7 +57,6 @@ void setup() {
   epaper.drawLine(PIC_RIGHT_X + PIC_GAP, y, epaper.width() - 2 * PIC_GAP, y,
                   TFT_BLACK);
   drawCalendar(epaper);
-
   drawWeather(epaper);
 
   epaper.update();

@@ -38,8 +38,9 @@ struct ForecastEntry {
 
 struct DailyForecastEntry {
   bool valid;
-  char dayName[4];
+  char dayName[10];
   char icon[4];
+  char description[32];
   float tempHigh;
   float tempLow;
 };
@@ -598,8 +599,10 @@ bool fetchDailyForecastData() {
     float maxHigh;
     float minLow;
     char middayIcon[4];
+    char middayDesc[32];
     int middayHour; // closest hour to midday (12-15)
     char fallbackIcon[4];
+    char fallbackDesc[32];
     bool hasMidday;
   };
 
@@ -613,8 +616,10 @@ bool fetchDailyForecastData() {
     buckets[i].maxHigh = -100;
     buckets[i].minLow = 100;
     buckets[i].middayIcon[0] = '\0';
+    buckets[i].middayDesc[0] = '\0';
     buckets[i].middayHour = 99;
     buckets[i].fallbackIcon[0] = '\0';
+    buckets[i].fallbackDesc[0] = '\0';
     buckets[i].hasMidday = false;
   }
 
@@ -625,6 +630,7 @@ bool fetchDailyForecastData() {
   for (int i = 0; i < list.size(); i++) {
     const char *dt_txt = list[i]["dt_txt"];
     const char *icon = list[i]["weather"][0]["icon"];
+    const char *desc = list[i]["weather"][0]["description"];
     float high = list[i]["main"]["temp_max"];
     float low = list[i]["main"]["temp_min"];
 
@@ -659,13 +665,16 @@ bool fetchDailyForecastData() {
     if (low < buckets[bi].minLow)
       buckets[bi].minLow = low;
 
-    // Store fallback icon (first entry of the day)
+    // Store fallback icon/desc (first entry of the day)
     if (buckets[bi].fallbackIcon[0] == '\0' && icon) {
       strncpy(buckets[bi].fallbackIcon, icon,
               sizeof(buckets[bi].fallbackIcon) - 1);
+      if (desc)
+        strncpy(buckets[bi].fallbackDesc, desc,
+                sizeof(buckets[bi].fallbackDesc) - 1);
     }
 
-    // Prefer midday icon (12:00-15:00)
+    // Prefer midday icon/desc (12:00-15:00)
     if (icon && hh >= 12 && hh <= 15) {
       int dist = abs(hh - 13); // distance from 13:00
       if (!buckets[bi].hasMidday || dist < buckets[bi].middayHour) {
@@ -673,6 +682,9 @@ bool fetchDailyForecastData() {
         buckets[bi].middayHour = dist;
         strncpy(buckets[bi].middayIcon, icon,
                 sizeof(buckets[bi].middayIcon) - 1);
+        if (desc)
+          strncpy(buckets[bi].middayDesc, desc,
+                  sizeof(buckets[bi].middayDesc) - 1);
       }
     }
   }
@@ -684,31 +696,38 @@ bool fetchDailyForecastData() {
 
     dailyForecastData[i].valid = true;
 
-    // Use midday icon if available, else fallback
+    // Use midday icon/desc if available, else fallback
     if (buckets[i].hasMidday) {
       strncpy(dailyForecastData[i].icon, buckets[i].middayIcon,
               sizeof(dailyForecastData[i].icon) - 1);
+      strncpy(dailyForecastData[i].description, buckets[i].middayDesc,
+              sizeof(dailyForecastData[i].description) - 1);
     } else {
       strncpy(dailyForecastData[i].icon, buckets[i].fallbackIcon,
               sizeof(dailyForecastData[i].icon) - 1);
+      strncpy(dailyForecastData[i].description, buckets[i].fallbackDesc,
+              sizeof(dailyForecastData[i].description) - 1);
     }
 
     dailyForecastData[i].tempHigh = buckets[i].maxHigh;
     dailyForecastData[i].tempLow = buckets[i].minLow;
 
-    // Get day name from day/month -> weekday
+    // Get day name from day/month -> weekday (full name)
     struct tm timeinfo = {};
     timeinfo.tm_year = yearValue - 1900;
     timeinfo.tm_mon = buckets[i].month - 1;
     timeinfo.tm_mday = buckets[i].day;
     mktime(&timeinfo);
-    strncpy(dailyForecastData[i].dayName, DAY_NAMES[(timeinfo.tm_wday + 6) % 7],
+    const char *fullName = FULL_DAY_NAMES[timeinfo.tm_wday];
+    strncpy(dailyForecastData[i].dayName, fullName,
             sizeof(dailyForecastData[i].dayName) - 1);
-    dailyForecastData[i].dayName[3] = '\0';
+    dailyForecastData[i].dayName[sizeof(dailyForecastData[i].dayName) - 1] =
+        '\0';
 
-    Serial.printf("Daily[%d]: %s %s %.0f/%.0f°C\n", i,
+    Serial.printf("Daily[%d]: %s %s %.0f/%.0f°C (%s)\n", i,
                   dailyForecastData[i].dayName, dailyForecastData[i].icon,
-                  dailyForecastData[i].tempHigh, dailyForecastData[i].tempLow);
+                  dailyForecastData[i].tempHigh, dailyForecastData[i].tempLow,
+                  dailyForecastData[i].description);
   }
 
   return true;
@@ -722,17 +741,16 @@ void drawDailyForecastSection(EPaper &epaperRef) {
   int cellCenter = cellW / 2;
 
   // Available area: DAILY_FCST_AREA_W x DAILY_FCST_H, centered in area
-  int areaMidY = DAILY_FCST_Y + DAILY_FCST_H / 2;
 
   epaperRef.setFreeFont(&FreeSans9pt7b);
   int dayFontH = epaperRef.fontHeight();
-  epaperRef.setFreeFont(&FreeSans12pt7b);
-  int tempFontH = epaperRef.fontHeight();
+  int tempFontH = dayFontH;
 
   int dayY = DAILY_FCST_Y + 6;
-  int iconAreaSize = 58;
-  int iconY = areaMidY + 4; // icon center Y
-  int tempY = DAILY_FCST_Y + DAILY_FCST_H - tempFontH - 2;
+  int iconAreaSize = 44;
+  int iconY = DAILY_FCST_Y + DAILY_FCST_H / 2 - 8;
+  int tempY = iconY + iconAreaSize / 2 + 4;
+  int descY = tempY + tempFontH;
 
   // Vertical separator lines between days
   int sepTop = DAILY_FCST_Y;
@@ -769,16 +787,23 @@ void drawDailyForecastSection(EPaper &epaperRef) {
     char tempText[16];
     snprintf(tempText, sizeof(tempText), "%s/%s", tempHi, tempLo);
 
-    epaperRef.setFreeFont(&FreeSans12pt7b);
+    epaperRef.setFreeFont(&FreeSans9pt7b);
     epaperRef.setTextColor(TFT_BLACK);
     int tw = epaperRef.textWidth(tempText);
     int tx = cx - tw / 2;
     epaperRef.drawString(tempText, tx, tempY);
 
     // Degree circle
-    int degX = tx + tw + 5;
-    int degY = tempY + 4;
-    epaperRef.drawCircle(degX, degY, 3, TFT_BLACK);
+    int degX = tx + tw + 4;
+    int degY = tempY + 5;
+    epaperRef.drawCircle(degX, degY, 2, TFT_BLACK);
+
+    // Weather description
+    epaperRef.setFreeFont(&FreeSans9pt7b);
+    epaperRef.setTextColor(TFT_BLACK);
+    int descW = epaperRef.textWidth(dailyForecastData[i].description);
+    epaperRef.drawString(dailyForecastData[i].description, cx - descW / 2,
+                         descY);
   }
 }
 
