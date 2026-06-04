@@ -27,18 +27,18 @@ const char *FULL_DAY_NAMES[] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
 const char *SEASON_NAMES[] = {"Winter", "Spring", "Summer", "Autumn"};
 
 // Image generation theme — change these to alter the picture style
-// const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
-//                         "related characters (Mei, Satasuki, Nekobasu, "
-//                         "Chibi-Totoro, Susuwatari ...)";
-// const char *PIC_THEME_SHORT = "Totoro";
+const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
+                        "related characters (Mei, Satasuki, Nekobasu, "
+                        "Chibi-Totoro, Susuwatari ...)";
+const char *PIC_THEME_SHORT = "Totoro";
 // const char *PIC_THEME = "Japanese Anime, Case Closed theme and "
 //                         "related characters (Conan, Ran, Kogoro, Haibara"
 //                         " ...)";
 // const char *PIC_THEME_SHORT = "Case Closed";
-const char *PIC_THEME =
-    "Ukiyo-e style, Japanese woodblock print, natural seasonal motifs, "
-    "and traditional aesthetics";
-const char *PIC_THEME_SHORT = "Ukiyo-e Japanese picture";
+// const char *PIC_THEME =
+//     "Ukiyo-e style, Japanese woodblock print, natural seasonal motifs, "
+//     "and traditional aesthetics";
+// const char *PIC_THEME_SHORT = "Ukiyo-e Japanese picture";
 
 // Skip image generation if one already exists for today
 const bool PIC_SKIP_EXISTING_IMAGE = true;
@@ -130,4 +130,4 @@ const int BAT_ICON_H = 22;   // battery icon body height
 const int BAT_TEXT_GAP = 8;  // gap between icon and percentage text (px)
 
 // Deep sleep duration in hours (0 = disabled, useful for debugging)
-const int DEEP_SLEEP_HOURS = 0;
+const int DEEP_SLEEP_HOURS = 3;
