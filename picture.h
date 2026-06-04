@@ -86,7 +86,6 @@ bool generateImagePrompt() {
     seasonIdx = getSeasonIndex(t.tm_mon + 1);
   }
   const char *seasonName = SEASON_NAMES[seasonIdx];
-  const char *seasonBg = SEASON_BG[seasonIdx];
 
   // Build wind description for the prompt
   char windDesc[16];
@@ -112,30 +111,31 @@ bool generateImagePrompt() {
   body += "\"model\":\"gpt-4o-mini\",";
   body += "\"messages\":[";
   body +=
-      "{\"role\":\"system\",\"content\":\"You create image generation prompts. "
-      "Japanese Anime, Studio Ghibli, Totoro theme and "
-      "related characters (Mei, Satasuki, Nekobasu, Chibi-Totoro, Susuwatari  "
-      "...). "
-      "Generate a short, vivid, single-paragraph image prompt (max 200 chars) "
+      "{\"role\":\"system\",\"content\":\"You create image generation "
+      "prompts. " +
+      String(PIC_THEME) +
+      ". "
+      "Generate a short, single-paragraph image prompt (max 200 chars) "
       "that reflects the given weather and season. "
       "The weather conditions (rain, overcast, clear, snow, wind, etc.) must "
-      "be the primary driver of the scene's atmosphere, mood, and sky. "
+      "be the primary driver of the scene's atmosphere and sky. "
       "Season mostly influences background foliage and colors (e.g. cherry "
       "blossoms for spring, maple leaves for autumn, bare trees for winter) "
       "but weather supersedes season. "
-      "Enrich the scene with details/accessories that fit the weather+season "
-      "combo, e.g. umbrella, raincoat, kite, icecream, snowflakes, puddles, "
-      "wind-blown leaves..., but keep the overall image composition simple. "
-      "and scenery each day. "
+      "Enrich the scene with details/accessories/activities that fit the "
+      "weather and season "
+      "(e.g. umbrella, raincoat, kite, icecream, snowflakes, puddles, "
+      "wind-blown leaves)"
+      "Keep the overall image composition simple and limited 1 or 2 "
+      "characters/persons. "
       "Output only the prompt text, nothing else.\"},";
   body += "{\"role\":\"user\",\"content\":\"Weather: ";
   body += weatherDesc;
   body += "\\nSeason: ";
   body += seasonName;
-  body += "\\nSeasonal background elements: ";
-  body += seasonBg;
-  body += "\\n\\nCreate an image prompt for a Totoro-related scene but not "
-          "limited to Totoro only.\"}";
+  body += "\\n\\nCreate an image prompt for a ";
+  body += PIC_THEME_SHORT;
+  body += "-related scene.\"}";
   body += "],";
   body += "\"max_tokens\":256,\"temperature\":0.9}";
 
@@ -676,7 +676,7 @@ void cleanupOldImages() {
 // Main entry point: fetch and store the daily image
 // ============================================================
 bool fetchAndStoreDailyImage() {
-  if (SKIP_EXISTING_IMAGE && imageExistsForToday()) {
+  if (PIC_SKIP_EXISTING_IMAGE && imageExistsForToday()) {
     Serial.println("Today's image already exists, skipping generation.");
     return true;
   }

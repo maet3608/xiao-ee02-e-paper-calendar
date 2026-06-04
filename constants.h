@@ -26,22 +26,21 @@ const char *FULL_DAY_NAMES[] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
 // Season names for image prompt generation
 const char *SEASON_NAMES[] = {"Winter", "Spring", "Summer", "Autumn"};
 
-// Season background descriptions for prompt generation
-// NOTE: Must not include weather-specific words (e.g. "sunny", "rainy")
-//   that could contradict actual weather. Weather drives the scene.
-const char *SEASON_BG[] = {
-    "snow-covered landscape, bare trees, cozy warm interior scenes, "
-    "snowflakes, winter sky", // Winter
-    "cherry blossoms in full bloom, fresh green leaves, flowering meadows, "
-    "pastel pink petals", // Spring
-    "lush greenery, rice paddies, cicadas, deep green forests, vibrant "
-    "flowers", // Summer
-    "red and gold maple leaves, mushrooms on the forest floor, golden "
-    "harvest fields, warm amber hues" // Autumn
-};
+// Image generation theme — change these to alter the picture style
+const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
+                        "related characters (Mei, Satasuki, Nekobasu, "
+                        "Chibi-Totoro, Susuwatari ...)";
+const char *PIC_THEME_SHORT = "Totoro";
+// const char *PIC_THEME = "Japanese Anime, Case Closed theme and "
+//                         "related characters (Conan, Ran, Kogoro, Haibara"
+//                         " ...)";
+// const char *PIC_THEME_SHORT = "Case Closed";
 
-// Weather condition name mapping (OWM icon code prefix -> human readable)
-struct WeatherCondition {
+// Skip image generation if one already exists for today
+const bool PIC_SKIP_EXISTING_IMAGE = true
+
+    // Weather condition name mapping (OWM icon code prefix -> human readable)
+    struct WeatherCondition {
   const char *iconPrefix;
   const char *label;
 };
@@ -117,11 +116,7 @@ const int FCST_ICON_Y = FCST_Y + 31;
 const int CAL_EVENTS_X = 1063;
 const int CAL_EVENTS_W = 504;
 const int CAL_EVENTS_Y = 970;
-const int CAL_EVENTS_MAX = 4;
-
-// Skip image generation if one already exists for today (set false to force
-// regeneration)
-const bool SKIP_EXISTING_IMAGE = true;
+const int CAL_EVENTS_MAX = 6;
 
 // Deep sleep duration in hours (0 = disabled, useful for debugging)
-const int DEEP_SLEEP_HOURS = 0;
+const int DEEP_SLEEP_HOURS = 3;

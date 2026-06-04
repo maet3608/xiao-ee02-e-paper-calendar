@@ -748,7 +748,7 @@ void drawDailyForecastSection(EPaper &epaperRef) {
 
   int dayY = DAILY_FCST_Y + 6;
   int iconAreaSize = 44;
-  int iconY = DAILY_FCST_Y + DAILY_FCST_H / 2 - 7;
+  int iconY = DAILY_FCST_Y + DAILY_FCST_H / 2 - 6;
   int tempY = iconY + iconAreaSize / 2 + 2;
   int descY = tempY + tempFontH;
 

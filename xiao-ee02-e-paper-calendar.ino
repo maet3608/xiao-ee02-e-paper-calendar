@@ -77,7 +77,7 @@ void setup() {
     Serial.println("Checking/creating daily image...");
     fetchAndStoreDailyImage();
   } else {
-    Serial.println("Weather data not available, skipping image generation.");
+    Serial.println("Weather data not available!");
   }
 
   epaper.begin();
