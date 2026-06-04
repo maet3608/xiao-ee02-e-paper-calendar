@@ -27,20 +27,24 @@ const char *FULL_DAY_NAMES[] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
 const char *SEASON_NAMES[] = {"Winter", "Spring", "Summer", "Autumn"};
 
 // Image generation theme — change these to alter the picture style
-const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
-                        "related characters (Mei, Satasuki, Nekobasu, "
-                        "Chibi-Totoro, Susuwatari ...)";
-const char *PIC_THEME_SHORT = "Totoro";
+// const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
+//                         "related characters (Mei, Satasuki, Nekobasu, "
+//                         "Chibi-Totoro, Susuwatari ...)";
+// const char *PIC_THEME_SHORT = "Totoro";
 // const char *PIC_THEME = "Japanese Anime, Case Closed theme and "
 //                         "related characters (Conan, Ran, Kogoro, Haibara"
 //                         " ...)";
 // const char *PIC_THEME_SHORT = "Case Closed";
+const char *PIC_THEME =
+    "Ukiyo-e style, Japanese woodblock print, natural seasonal motifs, "
+    "and traditional aesthetics";
+const char *PIC_THEME_SHORT = "Ukiyo-e Japanese picture";
 
 // Skip image generation if one already exists for today
-const bool PIC_SKIP_EXISTING_IMAGE = true
+const bool PIC_SKIP_EXISTING_IMAGE = true;
 
-    // Weather condition name mapping (OWM icon code prefix -> human readable)
-    struct WeatherCondition {
+// Weather condition name mapping (OWM icon code prefix -> human readable)
+struct WeatherCondition {
   const char *iconPrefix;
   const char *label;
 };
@@ -118,5 +122,12 @@ const int CAL_EVENTS_W = 504;
 const int CAL_EVENTS_Y = 970;
 const int CAL_EVENTS_MAX = 6;
 
+// Battery charge indicator position (lower right corner of 1600x1200 display)
+const int BAT_ICON_X = 1532; // battery icon x position
+const int BAT_ICON_Y = 1160; // battery icon y position
+const int BAT_ICON_W = 50;   // battery icon body width
+const int BAT_ICON_H = 22;   // battery icon body height
+const int BAT_TEXT_GAP = 8;  // gap between icon and percentage text (px)
+
 // Deep sleep duration in hours (0 = disabled, useful for debugging)
-const int DEEP_SLEEP_HOURS = 3;
+const int DEEP_SLEEP_HOURS = 0;

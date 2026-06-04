@@ -144,10 +144,21 @@ bool fetchCalendarEvents() {
            CALENDAR_API_KEY);
   http.begin(client, url);
   http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+  http.setTimeout(15000); // 15s timeout — calendar runs last, WiFi may be slow
+
   int code = http.GET();
   if (code != HTTP_CODE_OK) {
     http.end();
-    Serial.printf("Calendar API returned %d\n", code);
+    Serial.printf("Calendar API returned %d, retrying...\n", code);
+    delay(1000);
+    http.begin(client, url);
+    http.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
+    http.setTimeout(15000);
+    code = http.GET();
+  }
+  if (code != HTTP_CODE_OK) {
+    http.end();
+    Serial.printf("Calendar API retry returned %d\n", code);
     return false;
   }
   String payload = http.getString();

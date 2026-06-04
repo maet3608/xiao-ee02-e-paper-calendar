@@ -18,6 +18,7 @@
 #include "TFT_eSPI.h"
 #include "constants.h"
 #include "credentials.h"
+#include "battery.h"
 #include "calendar.h"
 #include "picture.h"
 #include "weather.h"
@@ -96,6 +97,7 @@ void setup() {
   drawDailyForecastSection(epaper);
   drawCalendar(epaper);
   drawCalendarEvents(epaper);
+  drawBattery(epaper);
   drawWeather(epaper);
 
   epaper.update();
