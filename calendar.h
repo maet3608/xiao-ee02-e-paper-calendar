@@ -1,5 +1,7 @@
 #pragma once
 
+#define BOARD_SCREEN_COMBO 510
+#define USE_XIAO_EPAPER_DISPLAY_BOARD_EE02
 #include "TFT_eSPI.h"
 #include "constants.h"
 #include "credentials.h"

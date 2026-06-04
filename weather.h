@@ -25,6 +25,7 @@ struct WeatherData {
     float temp;
     int humidity;
     float rain;
+    float windSpeed;
 };
 
 struct ForecastEntry {
@@ -35,7 +36,7 @@ struct ForecastEntry {
     float tempLow;
 };
 
-static WeatherData weatherData = {false, "", "", "", 0.0f, 0, 0.0f};
+static WeatherData weatherData = {false, "", "", "", 0.0f, 0, 0.0f, 0.0f};
 static ForecastEntry forecastData[FORECAST_COUNT] = {};
 
 // ============================================================
@@ -118,11 +119,13 @@ bool fetchWeatherData() {
     weatherData.temp = temp;
     weatherData.humidity = humidity;
     weatherData.rain = rain;
+    weatherData.windSpeed = doc["wind"]["speed"].is<float>() ? doc["wind"]["speed"].as<float>() : 0.0f;
     weatherData.valid = true;
 
-    Serial.printf("Weather: %s, %s, %.1f°C, %d%%, %.1fmm\n",
+    Serial.printf("Weather: %s, %s, %.1f°C, %d%%, %.1fmm, %.1fm/s wind\n",
                   weatherData.icon, weatherData.description,
-                  weatherData.temp, weatherData.humidity, weatherData.rain);
+                  weatherData.temp, weatherData.humidity, weatherData.rain,
+                  weatherData.windSpeed);
     return true;
 }
 
@@ -243,7 +246,7 @@ void addrain(int x, int y, int scale, bool isLarge) {
     int count = isLarge ? 7 : 5;
     int spread = scale * 2;
     int rainLen = scale;
-    int yOff = scale + isLarge ? 7 : 5; // below cloud center
+    int yOff = scale + (isLarge ? 7 : 4); // below cloud center
     for (int i = 0; i < count; i++) {
         int sx = x - spread + i * (spread * 2 / (count - 1));
         int sy = y + yOff;

@@ -12,41 +12,63 @@ const char *TIMEZONE = "CET-1CEST,M3.5.0,M10.5.0/3";
 const char *NTP_SERVER = "pool.ntp.org";
 
 // Month names (English)
-const char *MONTH_NAMES[] = {
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"};
+const char *MONTH_NAMES[] = {"January",   "February", "March",    "April",
+                             "May",       "June",     "July",     "August",
+                             "September", "October",  "November", "December"};
 
 // Weekday abbreviations starting with Monday (EU calendar convention)
 const char *DAY_NAMES[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
 // Full day names for weather display
-const char *FULL_DAY_NAMES[] = {
-    "Sunday", "Monday", "Tuesday", "Wednesday",
-    "Thursday", "Friday", "Saturday"};
+const char *FULL_DAY_NAMES[] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
+                                "Thursday", "Friday", "Saturday"};
+
+// Season names for image prompt generation
+const char *SEASON_NAMES[] = {"Winter", "Spring", "Summer", "Autumn"};
+
+// Season background descriptions for prompt generation
+// NOTE: Must not include weather-specific words (e.g. "sunny", "rainy")
+//   that could contradict actual weather. Weather drives the scene.
+const char *SEASON_BG[] = {
+    "snow-covered landscape, bare trees, cozy warm interior scenes, "
+    "snowflakes, winter sky", // Winter
+    "cherry blossoms in full bloom, fresh green leaves, flowering meadows, "
+    "pastel pink petals", // Spring
+    "lush greenery, rice paddies, cicadas, deep green forests, vibrant "
+    "flowers", // Summer
+    "red and gold maple leaves, mushrooms on the forest floor, golden "
+    "harvest fields, warm amber hues" // Autumn
+};
 
 // Weather condition name mapping (OWM icon code prefix -> human readable)
 struct WeatherCondition {
-    const char *iconPrefix;
-    const char *label;
+  const char *iconPrefix;
+  const char *label;
 };
 
 const WeatherCondition WEATHER_CONDITIONS[] = {
-    {"01", "Clear"},
-    {"02", "Partly Cloudy"},
-    {"03", "Cloudy"},
-    {"04", "Overcast"},
-    {"09", "Showers"},
-    {"10", "Rain"},
-    {"11", "Thunderstorm"},
-    {"13", "Snow"},
-    {"50", "Mist"},
+    {"01", "Clear"},        {"02", "Partly Cloudy"}, {"03", "Cloudy"},
+    {"04", "Overcast"},     {"09", "Showers"},       {"10", "Rain"},
+    {"11", "Thunderstorm"}, {"13", "Snow"},          {"50", "Mist"},
 };
 
-const int NUM_CONDITIONS = sizeof(WEATHER_CONDITIONS) / sizeof(WEATHER_CONDITIONS[0]);
+const int NUM_CONDITIONS =
+    sizeof(WEATHER_CONDITIONS) / sizeof(WEATHER_CONDITIONS[0]);
 
 // ============================================================
 // Display layout constants
 // ============================================================
+
+// Picture section (upper left: x=10..1034, y=10..1034)
+const int PIC_X = 10;
+const int PIC_Y = 10;
+const int PIC_W = 1024;
+const int PIC_H = 1024;
+const int PIC_GAP = 10;
+const int PIC_RIGHT_X = PIC_X + PIC_W + PIC_GAP; // 1044
+
+// SPIFFS image path template
+const char *IMAGE_PATH = "/img_%04d-%02d-%02d.bin";
 
 // Calendar section (lower right: x=1054..1580, y=600..1180)
 const int CAL_HEADER_X = 1064;
@@ -81,3 +103,10 @@ const int WX_DATA_Y = 360;
 const int FCST_Y = 470;
 const int FCST_CELL_W = 95;
 const int FCST_ICON_Y = FCST_Y + 31;
+
+// Skip image generation if one already exists for today (set false to force
+// regeneration)
+const bool SKIP_EXISTING_IMAGE = true;
+
+// Deep sleep duration in hours (0 = disabled, useful for debugging)
+const int DEEP_SLEEP_HOURS = 0;
