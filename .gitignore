@@ -40,4 +40,6 @@
 examples/
 credentials.h
 
+.clang-format
+.clinerules/
 
