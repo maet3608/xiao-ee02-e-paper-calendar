@@ -70,12 +70,16 @@ All settings are in `constants.h`:
 | `PIC_SKIP_EXISTING_IMAGE` | Skip generation if today's image already exists |
 | `DEEP_SLEEP_HOURS` | Hours between wake cycles (0 = disabled, for debugging) |
 
-API credentials go in a `credentials.h` file (not tracked in git):
+You need to add a file `credentials.h` file with the following credentials and API keys:
 
-- `SSID` / `PASSWORD` — Wi-Fi credentials
-- `OPENWEATHER_API_KEY` — OpenWeatherMap API key
-- `OPENAI_API_KEY` — OpenAI API key
-- `GOOGLE_CALENDAR_URL` / `CALENDAR_API_KEY` — Google Apps Script endpoint and key for calendar events
+```
+const char *SSID = "xxx";
+const char *PASSWORD = "xxx";
+const char *OPENAI_API_KEY = "sk-proj-xxx"
+const char *OPENWEATHER_API_KEY = "xxx";
+const char *GOOGLE_CALENDAR_URL = "https://script.google.com/macros/s/xxx";
+const char *CALENDAR_API_KEY = "xxx";
+```
 
 ## Arduino IDE Settings
 

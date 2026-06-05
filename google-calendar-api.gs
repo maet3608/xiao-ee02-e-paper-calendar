@@ -16,7 +16,7 @@
 // ============================================================
 
 const MAX_EVENTS = 6;
-const API_KEY = "knVAcST3Blb";
+const API_KEY = "xxx";
 
 function doGet(e) {
   // Validate API key
