@@ -36,10 +36,12 @@
 *.x86_64
 *.hex
 
-
+docs/
 examples/
 credentials.h
 
 .clang-format
 .clinerules/
+.vscode/
 
+docs/.outline.yaml

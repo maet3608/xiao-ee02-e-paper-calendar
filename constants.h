@@ -31,14 +31,6 @@ const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
                         "related characters (Mei, Satasuki, Nekobasu, "
                         "Chibi-Totoro, Susuwatari ...)";
 const char *PIC_THEME_SHORT = "Totoro";
-// const char *PIC_THEME = "Japanese Anime, Case Closed theme and "
-//                         "related characters (Conan, Ran, Kogoro, Haibara"
-//                         " ...)";
-// const char *PIC_THEME_SHORT = "Case Closed";
-// const char *PIC_THEME =
-//     "Ukiyo-e style, Japanese woodblock print, natural seasonal motifs, "
-//     "and traditional aesthetics";
-// const char *PIC_THEME_SHORT = "Ukiyo-e Japanese picture";
 
 // Skip image generation if one already exists for today
 const bool PIC_SKIP_EXISTING_IMAGE = true;

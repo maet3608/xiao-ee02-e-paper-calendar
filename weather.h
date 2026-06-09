@@ -230,7 +230,7 @@ void addcloud(int x, int y, int scale, int linesize) {
 }
 
 void addsun(int x, int y, int scale, bool isLarge) {
-  int linesize = 5;
+  int linesize = 3;
   epaper.fillRect(x - scale * 2, y, scale * 4, linesize, TFT_BLACK);
   epaper.fillRect(x, y - scale * 2, linesize, scale * 4, TFT_BLACK);
   epaper.drawLine(x - scale * 1.3, y - scale * 1.3, x + scale * 1.3,

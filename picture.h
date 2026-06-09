@@ -123,12 +123,14 @@ bool generateImagePrompt() {
       "blossoms for spring, maple leaves for autumn, bare trees for winter) "
       "but weather supersedes season. "
       "Enrich the scene with details/accessories/activities that fit the "
-      "weather and season "
+      "weather and season if suitable "
       "(e.g. umbrella, raincoat, kite, icecream, snowflakes, puddles, "
-      "wind-blown leaves)"
-      "Keep the overall image composition simple and limited 1 or 2 "
-      "characters/persons. "
-      "Output only the prompt text, nothing else.\"},";
+      "wind-blown leaves, clouds, sun rays, reflections, etc.). "
+      "Keep the overall image composition simple and show only one or two "
+      "characters at most."
+      "Output only the image prompt, without any explanation or additional "
+      "text.\"},";
+  "Output only the prompt text, nothing else.\"},";
   body += "{\"role\":\"user\",\"content\":\"Weather: ";
   body += weatherDesc;
   body += "\\nSeason: ";

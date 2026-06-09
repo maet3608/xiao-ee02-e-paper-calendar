@@ -9,6 +9,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
+#include <stdlib.h>
 #include <time.h>
 
 // ============================================================
@@ -133,6 +134,11 @@ struct CalendarEvent {
 
 static CalendarEvent calEvents[CAL_EVENTS_MAX] = {};
 
+// Comparison function for sorting events by start time (HH:MM string)
+static int cmpEvents(const void *a, const void *b) {
+  return strcmp(((CalendarEvent *)a)->start, ((CalendarEvent *)b)->start);
+}
+
 // Fetch today's events from the Google Apps Script endpoint
 bool fetchCalendarEvents() {
   WiFiClientSecure client;
@@ -190,6 +196,10 @@ bool fetchCalendarEvents() {
                   calEvents[count].end, calEvents[count].title);
     count++;
   }
+
+  // Sort events by start time so earlier events appear first
+  qsort(calEvents, count, sizeof(CalendarEvent), cmpEvents);
+
   return true;
 }
 
