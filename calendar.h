@@ -223,6 +223,9 @@ void drawCalendarEvents(EPaper &epaper) {
     if (!calEvents[i].valid)
       continue;
 
+    // Events with an exclamation mark in the title are drawn in red
+    bool isUrgent = strchr(calEvents[i].title, '!') != NULL;
+
     char line[96];
     snprintf(line, sizeof(line), "%s - %s  %s", calEvents[i].start,
              calEvents[i].end, calEvents[i].title);
@@ -245,6 +248,7 @@ void drawCalendarEvents(EPaper &epaper) {
       }
     }
 
+    epaper.setTextColor(isUrgent ? TFT_RED : TFT_BLACK);
     epaper.drawString(line, CAL_EVENTS_X, y);
     y += lineH;
   }
