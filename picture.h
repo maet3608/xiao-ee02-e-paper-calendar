@@ -1,16 +1,3 @@
-// board: XIAO_ESP32S3_PLUS
-// tool settings:
-// - USB CDC on Boot: Enabled
-// - PSRAM : OPI PSRAM
-// - Partition Scheme: Default with spiffs (3MB APP/1.5MB SPIFFS)
-// esp32 core: 4.0.0-alpha1
-// libraries:
-// - PNGdec: 1.1.6
-// - ArduinoJson: 7.4.3
-// purpose:
-// - Generate AI images on-device: weather+season → OpenAI prompt → OpenAI image
-// → dither → SPIFFS → display
-
 #pragma once
 
 #include <ArduinoJson.h>

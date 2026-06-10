@@ -45,3 +45,4 @@ credentials.h
 .vscode/
 
 docs/.outline.yaml
+package-lock.json

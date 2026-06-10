@@ -8,12 +8,6 @@
 // - https://github.com/Seeed-Studio/Seeed_GFX/tree/master : 2.0.3
 // - ArduinoJson: 7.4.3
 // - PNGdec: 1.1.6
-// purpose:
-// - picture frame with e-paper display 1600 x 1200
-// - shows AI generated japanese anime (totoro) pictures in the upper left
-// - shows day and current weather in the upper right
-// - shows monthly calendar in the lower right
-// - shows 5 days weather forecast at the left bottom
 
 #include "TFT_eSPI.h"
 #include "constants.h"
