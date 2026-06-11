@@ -15,7 +15,7 @@
 //   Max 6 events are returned (fits the display area).
 // ============================================================
 
-const MAX_EVENTS = 6;
+const MAX_EVENTS = 8;
 const API_KEY = "xxx";
 
 function doGet(e) {
@@ -41,11 +41,14 @@ function doGet(e) {
     for (let i = 0; i < events.length && result.length < MAX_EVENTS; i++) {
       const ev = events[i];
 
+      const calName = allCals[c].getName();
+
       if (ev.isAllDayEvent()) {
         result.push({
           start: "00:00",
           end: "24:00",
-          title: ev.getTitle()
+          title: ev.getTitle(),
+          calendar: calName
         });
         continue;
       }
@@ -56,7 +59,8 @@ function doGet(e) {
       result.push({
         start: formatTime(startTime),
         end: formatTime(endTime),
-        title: ev.getTitle()
+        title: ev.getTitle(),
+        calendar: calName
       });
     }
   }

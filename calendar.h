@@ -130,6 +130,7 @@ struct CalendarEvent {
   char start[6];
   char end[6];
   char title[64];
+  char calendar[32];
 };
 
 static CalendarEvent calEvents[CAL_EVENTS_MAX] = {};
@@ -185,15 +186,20 @@ bool fetchCalendarEvents() {
     const char *s = ev["start"];
     const char *e = ev["end"];
     const char *t = ev["title"];
+    const char *c = ev["calendar"];
     if (s)
       strncpy(calEvents[count].start, s, sizeof(calEvents[count].start) - 1);
     if (e)
       strncpy(calEvents[count].end, e, sizeof(calEvents[count].end) - 1);
     if (t)
       strncpy(calEvents[count].title, t, sizeof(calEvents[count].title) - 1);
+    if (c)
+      strncpy(calEvents[count].calendar, c,
+              sizeof(calEvents[count].calendar) - 1);
     calEvents[count].valid = true;
-    Serial.printf("Event[%d]: %s - %s  %s\n", count, calEvents[count].start,
-                  calEvents[count].end, calEvents[count].title);
+    Serial.printf("Event[%d]: %s - %s  %s  [%s]\n", count,
+                  calEvents[count].start, calEvents[count].end,
+                  calEvents[count].title, calEvents[count].calendar);
     count++;
   }
 
@@ -223,8 +229,29 @@ void drawCalendarEvents(EPaper &epaper) {
     if (!calEvents[i].valid)
       continue;
 
-    // Events with an exclamation mark in the title are drawn in red
-    bool isUrgent = strchr(calEvents[i].title, '!') != NULL;
+    // Priority: red (!) > yellow (birthday) > green (holiday) > black (default)
+    uint16_t color = TFT_BLACK;
+    if (strchr(calEvents[i].title, '!') != NULL) {
+      color = TFT_RED;
+    } else {
+      // Convert title and calendar to lowercase for case-insensitive matching
+      char titleLower[64];
+      char calLower[32];
+      strncpy(titleLower, calEvents[i].title, sizeof(titleLower) - 1);
+      strncpy(calLower, calEvents[i].calendar, sizeof(calLower) - 1);
+      for (char *p = titleLower; *p; p++)
+        *p = tolower(*p);
+      for (char *p = calLower; *p; p++)
+        *p = tolower(*p);
+
+      if (strstr(titleLower, "birthday") != NULL ||
+          strstr(titleLower, "geburtstag") != NULL) {
+        color = TFT_YELLOW;
+      } else if (strstr(calLower, "holiday") != NULL ||
+                 strstr(calLower, "feiertag") != NULL) {
+        color = TFT_GREEN;
+      }
+    }
 
     char line[96];
     snprintf(line, sizeof(line), "%s - %s  %s", calEvents[i].start,
@@ -248,7 +275,7 @@ void drawCalendarEvents(EPaper &epaper) {
       }
     }
 
-    epaper.setTextColor(isUrgent ? TFT_RED : TFT_BLACK);
+    epaper.setTextColor(color);
     epaper.drawString(line, CAL_EVENTS_X, y);
     y += lineH;
   }
