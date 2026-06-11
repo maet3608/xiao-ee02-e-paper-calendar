@@ -1,6 +1,8 @@
 # xiao-ee02-e-paper-calendar
 
-Calendar, Weather and AI picture on XIAO EE02 E-Paper
+Calendar, Weather and AI picture on XIAO EE02 E-Paper.
+
+For a detailed description see the [E-Paper Wall Calendar with AI-Generated Artwork and Weather Display](https://www.makerguides.com/e-paper-wall-calendar-with-ai-generated-artwork-and-weather-display/) article.
 
 ## Overview
 
