@@ -229,7 +229,7 @@ void drawCalendarEvents(EPaper &epaper) {
     if (!calEvents[i].valid)
       continue;
 
-    // Priority: red (!) > yellow (birthday) > green (holiday) > black (default)
+    // Priority: red (!) > blue (birthday) > green (holiday) > black (default)
     uint16_t color = TFT_BLACK;
     if (strchr(calEvents[i].title, '!') != NULL) {
       color = TFT_RED;
@@ -246,7 +246,7 @@ void drawCalendarEvents(EPaper &epaper) {
 
       if (strstr(titleLower, "birthday") != NULL ||
           strstr(titleLower, "geburtstag") != NULL) {
-        color = TFT_YELLOW;
+        color = TFT_BLUE;
       } else if (strstr(calLower, "holiday") != NULL ||
                  strstr(calLower, "feiertag") != NULL) {
         color = TFT_GREEN;
