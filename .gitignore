@@ -48,3 +48,4 @@ docs/.outline.yaml
 package-lock.json
 docs/.wp-uploads.json
 docs/.full-article.md
+.pio-mcp-workspace/

@@ -6,8 +6,8 @@
 // esp32 core: 4.0.0-alpha1
 // libraries:
 // - https://github.com/Seeed-Studio/Seeed_GFX/tree/master : 2.0.3
+// - https://github.com/maet3608/PNGdec : 1.1.6
 // - ArduinoJson: 7.4.3
-// - PNGdec: 1.1.6
 
 #include "TFT_eSPI.h"
 #include "constants.h"

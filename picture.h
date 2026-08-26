@@ -73,6 +73,7 @@ bool generateImagePrompt() {
     seasonIdx = getSeasonIndex(t.tm_mon + 1);
   }
   const char *seasonName = SEASON_NAMES[seasonIdx];
+  const char *picTheme = PIC_THEMES[random(NUM_PIC_THEMES)];
 
   // Build wind description for the prompt
   char windDesc[16];
@@ -99,8 +100,8 @@ bool generateImagePrompt() {
   body += "\"messages\":[";
   body +=
       "{\"role\":\"system\",\"content\":\"You create image generation "
-      "prompts. " +
-      String(PIC_THEME) +
+      "prompts for the following theme: " +
+      String(picTheme) +
       ". "
       "Generate a short, single-paragraph image prompt (max 200 chars) "
       "that reflects the given weather and season. "
@@ -123,7 +124,7 @@ bool generateImagePrompt() {
   body += "\\nSeason: ";
   body += seasonName;
   body += "\\n\\nCreate an image prompt for a ";
-  body += PIC_THEME_SHORT;
+  body += picTheme;
   body += "-related scene.\"}";
   body += "],";
   body += "\"max_tokens\":256,\"temperature\":0.9}";
@@ -603,6 +604,8 @@ bool processAndSaveImage(const uint8_t *pngData, size_t pngLen,
   int rc = gPng.openRAM((uint8_t *)pngData, (int32_t)pngLen, pngDrawCallback);
   if (rc != PNG_SUCCESS) {
     Serial.printf("PNG decode failed: %d\n", rc);
+    Serial.printf(
+        "Use forked PNGdec lib from https://github.com/maet3608/PNGdec\n");
     gOutputFile.close();
     SPIFFS.remove(path);
     return false;

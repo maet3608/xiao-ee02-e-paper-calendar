@@ -27,10 +27,14 @@ const char *FULL_DAY_NAMES[] = {"Sunday",   "Monday", "Tuesday", "Wednesday",
 const char *SEASON_NAMES[] = {"Winter", "Spring", "Summer", "Autumn"};
 
 // Image generation theme — change these to alter the picture style
-const char *PIC_THEME = "Japanese Anime, Studio Ghibli, Totoro theme and "
-                        "related characters (Mei, Satasuki, Nekobasu, "
-                        "Chibi-Totoro, Susuwatari ...)";
-const char *PIC_THEME_SHORT = "Totoro";
+const char *PIC_THEMES[] = {
+    "Japanese Anime,Totoro",           
+    "Japanese Anime, Inuyasha",
+    "Japanese Anime, Cowboy Bebop",    
+    "Japanese Anime, Ninja Scroll",
+    "Japanese Anime, Rurouni Kenshin",
+};
+const int NUM_PIC_THEMES = sizeof(PIC_THEMES) / sizeof(PIC_THEMES[0]);
 
 // Skip image generation if one already exists for today
 const bool PIC_SKIP_EXISTING_IMAGE = true;
